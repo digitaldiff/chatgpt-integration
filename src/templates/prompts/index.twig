@@ -1,0 +1,66 @@
+{% extends '_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Prompts' %}
+{% set selectedSubnavItem = 'prompts' %}
+
+{% set crumbs = [
+    { label: craft.chatgptIntegration.getPluginName, url: url('chatgpt-integration') },
+    { label: 'Prompts' | t('chatgpt-integration'), url: url('chatgpt-integration/groups') },
+] %}
+
+{% set prompts = craft.chatgptIntegration.getPrompts() %}
+
+{% block headertitle %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block actionButton %}
+    <a href="{{ cpUrl('chatgpt-integration/prompts/new') }}" class="btn submit add icon">{{ 'New Prompt'|t('chatgpt-integration') }}</a>
+{% endblock %}
+
+{% block contextMenu %}
+
+{% endblock %}
+
+{% block content %}
+
+    {% if prompts|length %}
+        <div class="tableview tablepane">
+            <table class="data fullwidth">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'Id' |t('chatgpt-integration') }}</th>
+                    <th scope="col">{{ 'Label' |t('chatgpt-integration') }}</th>
+                    <th scope="col">{{ 'Prompt Template' |t('chatgpt-integration') }}</th>
+                    <th scope="col">{{ 'Enabled' |t('chatgpt-integration') }}</th>
+                    <th class="thin"></th>
+                    <th class="thin"></th>
+                </tr>
+                </thead>
+                {% for prompt in prompts %}
+                    <tbody>
+                        <tr class="s-{{ prompt.id }}">
+                            <td class="id-column">{{ prompt.id }}</td>
+                            <td class="label-column"><a href="{{ cpUrl('chatgpt-integration/prompts/edit/' ~ prompt.id) }}">{{ prompt.label }}</a></td>
+                            <td class="prompt-template-column">{{ prompt.promptTemplate }}</td>
+                            <td class="enabled-column">{{ prompt.enabled }}</td>
+                            <td class="edit-column"><a href="{{ cpUrl('chatgpt-integration/prompts/edit/' ~ prompt.id) }}" class="edit icon" title="{{ 'Edit'|t('app') }}" role="button"></a></td>
+                            <td class="delete-column"><a href="{{ cpUrl('chatgpt-integration/prompts/delete/' ~ prompt.id) }}" class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div>
+            <p>{{ 'No prompts exist yet.'|t('chatgpt-integration') }}</p>
+        </div>
+    {% endif %}
+    <style>
+        .prompt-template-column {
+            max-width: 440px;
+        }
+    </style>
+{% endblock %}

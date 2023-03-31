@@ -1,0 +1,7 @@
+{% import '_includes/forms' as forms %}
+
+    {{ forms.lightswitchField({
+        label: "Enabled"|t('chatgpt-integrations'),
+        name: 'enabled',
+        on: (element) ? element.enabled : true
+    }) }}

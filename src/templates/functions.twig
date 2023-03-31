@@ -1,0 +1,85 @@
+{% js %}
+// $('.chatgpt-button').each(function () {
+//     let button = $(this);
+//     button.find('a').attr('data-layout-element', button.parents('.field').attr('data-layout-element'));
+// });
+
+$('.chatgpt-button a').click(function (){
+    //console.log($(this).attr('data-layout-element'));
+});
+
+$('.doAi').click(function(e) {
+    e.preventDefault();
+    let that = $(this);
+    let prompt = that.attr('data-prompt');
+    let input = $('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').find('.input input, .input textarea');
+    //$('.field[data-layout-element="' + that.attr('data-hash') + '"] .input').find('input, textarea');
+    let query = input.val();
+
+    input.val('Working ...');
+    //$('.chatgpt-button button').attr('aria-expanded', false);
+    sendRequest(prompt, query, input, that.attr('data-layout-element'));
+});
+
+/*$('.open-modal').click(function(e) {
+    e.preventDefault();
+    let that = $(this);
+    let input = that.parent(".input").find("input, textarea");
+    let label = $('.field[data-layout-element="' + that.attr('data-layout-element') + '"]').find('label').text();
+
+    console.log('.field[data-layout-element="' + that.attr('data-layout-element') + '"]');
+    console.log(label);
+
+    $('#my-awesome-modal header h2').text(label);
+
+    var modal = new Garnish.Modal($('#my-awesome-modal'));
+    $('#my-awesome-modal').attr('data-layout-element', that.attr('data-layout-element'));
+});*/
+
+function sendRequest(prompt, query, textField, hash) {
+
+    $.ajax({
+        type: "POST",
+        url: "https://api.openai.com/v1/chat/completions",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.accessToken }}");
+            },
+            data: JSON.stringify({
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": prompt + query }],
+                "temperature": 0.7,
+                "max_tokens": 256,
+                "top_p": 1,
+                "frequency_penalty": 0,
+                "presence_penalty": 0
+            }),
+            success: function(data) {
+                console.log(data.choices[0].message.content);
+                if ($('.field[data-layout-element="' + hash + '"]').attr('data-type') == 'craft\\redactor\\Field') {
+                    console.log(hash + ' redactor');
+                    let textareaId = textField.attr('id');
+                    $R('#' + textareaId, 'source.setCode', data.choices[0].message.content);
+                } else {
+                    console.log(hash + ' text');
+                    $(textField).val(data.choices[0].message.content);
+                }
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function(data) {
+
+        }).fail(function(data) {
+            alert('ChatGPT could not process the request');
+            $(textField).val(query);
+        });
+    }
+{% endjs %}
+{#
+
+<div id="my-awesome-modal" class="modal">
+    <div id="modal-body" class="body">
+        <header class="header">
+            <h2>My Awesome Modal</h2>
+        </header>
+    </div>
+</div>#}

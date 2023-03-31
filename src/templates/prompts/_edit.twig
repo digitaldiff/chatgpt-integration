@@ -1,0 +1,33 @@
+{% extends '_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Edit Prompt' %}
+
+{% set crumbs = [
+    { label: craft.chatgptIntegration.getPluginName | t('chatgpt-integration'), url: url('chatgpt-integration') },
+    { label: 'Prompts' | t('chatgpt-integration'), url: url('chatgpt-integration/prompts') },
+    { label: 'Edit' | t('chatgpt-integration'), url: url('chatgpt-integration/prompts/edit/' ~ prompt.id) },
+] %}
+
+{% set fullPageForm = true %}
+
+{% block content %}
+    {{ forms.hidden({
+        name: 'action',
+        value: 'chatgpt-integration/prompt/update-prompt'
+    }) }}
+
+    {{ forms.hidden({
+        name: 'id',
+        value: prompt.id
+    }) }}
+
+    {% include 'chatgpt-integration/prompts/_includes/promptFormFields' %}
+{% endblock %}
+
+{% block details %}
+    <div id="settings" class="meta">
+        {% include 'chatgpt-integration/_includes/_sidebar' with {'element': prompt } %}
+    </div>
+{% endblock %}

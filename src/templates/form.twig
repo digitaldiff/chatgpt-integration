@@ -1,0 +1,56 @@
+{% set actionBtnAttributes = {
+    class: ['btn', '', '', 'menubtn'],
+    type: 'button',
+    role: 'button',
+    title: 'Actions'|t('neo'),
+    aria: {
+        controls: 1,
+        label: "test button",
+    },
+    data: {
+        'disclosure-trigger': true,
+        'hash': hash
+    },
+    style: {
+        position: 'absolute',
+        top: 0,
+        right: 0
+    }
+} %}
+
+{% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.accessToken|length %}
+    {%  if "type=\"text\"" in input or "textarea" in input %}
+
+
+
+        <div class="chatgpt-button">
+            <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
+            <div id="1" class="menu menu--disclosure">
+                <ul class="padded">
+                    <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="Shorten text: " aria-label="{{ 'Kürzen'|t('chatgpt-integration') }}">{{ 'Kürzen'|t('chatgpt-integration') }}</a></li>
+                    <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="Gib mir die 5 relevantesten Hashtags von Linkedin zum Thema: " aria-label="{{ 'Hashtags'|t('chatgpt-integration') }}">{{ 'Hashtags'|t('chatgpt-integration') }}</a></li>
+                </ul>
+                <hr>
+                <ul class="padded">
+
+                    {% if craft.app.sites.getAllSites()|length > 1 %}
+                        {% for site in craft.app.sites.getAllSites () %}
+                            <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Übersetzen zu {language}'|t('chatgpt-integration', params = {
+                                    language: site.language
+                                } ) }}">{{ 'Übersetzen zu {language}'|t('chatgpt-integration', params = {
+                                        language: site.language
+                                    } ) }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                {#<hr>
+            <ul class="padded">
+                <li>
+                    <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
+                </li>
+            </ul>#}
+            </div>
+        </div>
+
+    {% endif %}
+{% endif %}
