@@ -46,9 +46,9 @@
 
                     {% if craft.app.sites.getAllSites()|length > 1 %}
                         {% for site in craft.app.sites.getAllSites () %}
-                            <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Übersetzen zu {language}'|t('chatgpt-integration', params = {
+                            <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
                                     language: site.language
-                                } ) }}">{{ 'Übersetzen zu {language}'|t('chatgpt-integration', params = {
+                                } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
                                         language: site.language
                                     } ) }}</a></li>
                         {% endfor %}

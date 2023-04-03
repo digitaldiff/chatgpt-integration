@@ -7,7 +7,7 @@
 
 {% set crumbs = [
     { label: craft.chatgptIntegration.getPluginName, url: url('chatgpt-integration') },
-    { label: 'Prompts' | t('chatgpt-integration'), url: url('chatgpt-integration/groups') },
+    { label: 'Prompts' | t('chatgpt-integration'), url: url('chatgpt-integration/prompts') },
 ] %}
 
 {% set prompts = craft.chatgptIntegration.getPrompts() %}
@@ -45,7 +45,7 @@
                             <td class="id-column">{{ prompt.id }}</td>
                             <td class="label-column"><a href="{{ cpUrl('chatgpt-integration/prompts/edit/' ~ prompt.id) }}">{{ prompt.label }}</a></td>
                             <td class="prompt-template-column">{{ prompt.promptTemplate }}</td>
-                            <td class="enabled-column">{{ prompt.enabled }}</td>
+                            <td class="enabled-column"><span class="status {{ prompt.enabled ? 'live' : 'disabled' }}" role="img" aria-label="Status: Live"></span></td>
                             <td class="edit-column"><a href="{{ cpUrl('chatgpt-integration/prompts/edit/' ~ prompt.id) }}" class="edit icon" title="{{ 'Edit'|t('app') }}" role="button"></a></td>
                             <td class="delete-column"><a href="{{ cpUrl('chatgpt-integration/prompts/delete/' ~ prompt.id) }}" class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                         </tr>
