@@ -13,10 +13,18 @@ class PromptService extends Component
     /**
      * @return array
      */
-    public function getPrompts(): array
+    public function getPrompts(bool $enabled = false): array
     {
         $result = [];
-        $prompts =  ChatgptIntegration_PromptRecord::find()->all();
+
+        $prompts =  ChatgptIntegration_PromptRecord::find();
+
+        if ($enabled) {
+            $prompts =  $prompts->where(['enabled' => true]);
+        }
+
+        $prompts =  $prompts->all();
+
         foreach($prompts as $prompt) {
             $result[] = $this->mapToModel($prompt);
         }

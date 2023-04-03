@@ -1,12 +1,18 @@
 {% js %}
-// $('.chatgpt-button').each(function () {
-//     let button = $(this);
-//     button.find('a').attr('data-layout-element', button.parents('.field').attr('data-layout-element'));
-// });
 
-$('.chatgpt-button a').click(function (){
-    //console.log($(this).attr('data-layout-element'));
+$('.chatgpt-button').each(function () {
+    let that = $(this);
+    //let hash = $(this).attr('data-hash');
+    let input = that.parents('.field').find('.input input, .input textarea');
+    if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+        let textareaId = input.attr('id');
+        $('#textareaId').css('padding-right', '100px');
+    } else {
+        input.css('padding-right', '100px');
+    }
+
 });
+
 
 $('.doAi').click(function(e) {
     e.preventDefault();
@@ -15,10 +21,18 @@ $('.doAi').click(function(e) {
     let input = $('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').find('.input input, .input textarea');
     //$('.field[data-layout-element="' + that.attr('data-hash') + '"] .input').find('input, textarea');
     let query = input.val();
+    let hash = that.attr('data-hash');
 
-    input.val('Working ...');
+    if ($('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+        let textareaId = input.attr('id');
+        $R('#' + textareaId, 'source.setCode', 'Working ...');
+    } else {
+        input.val('Working ...');
+    }
+
+
     //$('.chatgpt-button button').attr('aria-expanded', false);
-    sendRequest(prompt, query, input, that.attr('data-layout-element'));
+    sendRequest(prompt, query, input, hash);
 });
 
 /*$('.open-modal').click(function(e) {
@@ -41,12 +55,13 @@ function sendRequest(prompt, query, textField, hash) {
     $.ajax({
         type: "POST",
         url: "https://api.openai.com/v1/chat/completions",
+        //url: "https://api.openai.com/v1/edits",
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.accessToken }}");
             },
             data: JSON.stringify({
                 "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": prompt + query }],
+                "messages": [{"role": "user", "content": prompt + query  }],
                 "temperature": 0.7,
                 "max_tokens": 256,
                 "top_p": 1,
@@ -55,8 +70,9 @@ function sendRequest(prompt, query, textField, hash) {
             }),
             success: function(data) {
                 console.log(data.choices[0].message.content);
-                if ($('.field[data-layout-element="' + hash + '"]').attr('data-type') == 'craft\\redactor\\Field') {
-                    console.log(hash + ' redactor');
+                console.log('button[data-hash="' + hash + '"]');
+                if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+                    console.log('button[data-hash="' + hash + '"]');
                     let textareaId = textField.attr('id');
                     $R('#' + textareaId, 'source.setCode', data.choices[0].message.content);
                 } else {
@@ -69,14 +85,20 @@ function sendRequest(prompt, query, textField, hash) {
         }).done(function(data) {
 
         }).fail(function(data) {
-            alert('ChatGPT could not process the request');
-            $(textField).val(query);
+            alert(data.responseJSON.error.message);
+            if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+                console.log(hash + ' redactor');
+                let textareaId = textField.attr('id');
+                $R('#' + textareaId, 'source.setCode', query);
+            } else {
+                console.log(hash + ' text');
+                $(textField).val(query);
+            }
+
         });
     }
 {% endjs %}
-{#
-
-<div id="my-awesome-modal" class="modal">
+{#<div id="my-awesome-modal" class="modal">
     <div id="modal-body" class="body">
         <header class="header">
             <h2>My Awesome Modal</h2>

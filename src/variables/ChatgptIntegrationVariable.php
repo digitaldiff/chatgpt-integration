@@ -13,8 +13,8 @@ class ChatgptIntegrationVariable
         return Plugin::getInstance()->getSettings()->pluginName;
     }
 
-    public function getPrompts(): array
+    public function getPrompts(bool $enabled = false): array
     {
-        return Plugin::getInstance()->promptService->getPrompts();
+        return Plugin::getInstance()->promptService->getPrompts($enabled);
     }
 }

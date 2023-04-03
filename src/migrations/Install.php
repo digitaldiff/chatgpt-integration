@@ -3,6 +3,7 @@ namespace publishing\chatgptintegration\migrations;
 
 use Craft;
 use craft\db\Migration;
+use craft\helpers\StringHelper;
 use publishing\chatgptintegration\records\ChatgptIntegration_PromptRecord;
 
 /**
@@ -16,7 +17,7 @@ class Install extends Migration
     public function safeUp(): bool
     {
         $this->createTables();
-
+        $this->insertDefaultRows();
         return true;
     }
 
@@ -43,6 +44,23 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
+    }
+
+    protected function insertDefaultRows() {
+        $this->insert(ChatgptIntegration_PromptRecord::tableName(), array(
+            'label' => 'Shorten',
+            'promptTemplate' => 'Shorten the following text:'
+        ));
+
+        $this->insert(ChatgptIntegration_PromptRecord::tableName(), array(
+            'label' => 'Fix the grammar',
+            'promptTemplate' => 'Fix the grammar:'
+        ));
+
+        $this->insert(ChatgptIntegration_PromptRecord::tableName(), array(
+            'label' => 'Rewrite',
+            'promptTemplate' => 'Rewrite the following text:'
+        ));
     }
 
     protected function removeTables()

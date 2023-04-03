@@ -26,6 +26,14 @@
             value: settings.accessToken,
             instructions: 'Access token for the Chat GPT API'|t('chatgpt-integration'),
         }) }}
+
+        {{ forms.lightSwitchField({
+            label: 'Use page language'|t('chatgpt-integration'),
+            name: 'usePageLang',
+            value: settings.usePageLang,
+            on: settings.usePageLang,
+            instructions: 'Always use current page language for query results.'|t('chatgpt-integration')
+        }) }}
     {% endnamespace %}
 {% endblock %}
 

@@ -18,17 +18,28 @@
     }
 } %}
 
+{% set currentLang = "" %}
+
+{% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.usePageLang %}
+    {% for site in craft.app.sites.getAllSites () %}
+        {% if site.handle == craft.app.request.getQueryParam('site') %}
+            {% set currentLang = 'Using the locale ' ~ site.language %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.accessToken|length %}
-    {%  if "type=\"text\"" in input or "textarea" in input %}
+    {%  if " type=\"text\"" in input or "textarea" in input %}
 
-
+        {% set prompts = craft.chatgptIntegration.getPrompts(true) %}
 
         <div class="chatgpt-button">
             <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
             <div id="1" class="menu menu--disclosure">
                 <ul class="padded">
-                    <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="Shorten text: " aria-label="{{ 'Kürzen'|t('chatgpt-integration') }}">{{ 'Kürzen'|t('chatgpt-integration') }}</a></li>
-                    <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="Gib mir die 5 relevantesten Hashtags von Linkedin zum Thema: " aria-label="{{ 'Hashtags'|t('chatgpt-integration') }}">{{ 'Hashtags'|t('chatgpt-integration') }}</a></li>
+                    {% for item in prompts %}
+                        <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                    {% endfor %}
                 </ul>
                 <hr>
                 <ul class="padded">
