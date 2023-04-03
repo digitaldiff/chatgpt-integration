@@ -1,4 +1,4 @@
-# Release Notes for craft-chatgpt-integration
+# Release Notes for chatgpt-integration
 
 ## 1.0.0
 - Initial release
