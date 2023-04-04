@@ -33,7 +33,6 @@
 
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken|length %}
     {%  if (" type=\"text\"" in input or "textarea" in input) and "neo-input" not in input and "matrix-field" not in input %}
-        {{ input }}
         {% set prompts = craft.chatgptIntegration.getPrompts(true) %}
         <div class="chatgpt-button">
             <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
