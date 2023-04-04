@@ -66,12 +66,9 @@ class Plugin extends BasePlugin
     {
         parent::init();
 
-        // Defer most setup tasks until Craft is fully initialized
-        Craft::$app->onInit(function() {
-            $this->setup();
-            $this->attachFunctions();
-            $this->registerEvents();
-        });
+        $this->setup();
+        $this->attachFunctions();
+        $this->registerEvents();
     }
 
     /**
