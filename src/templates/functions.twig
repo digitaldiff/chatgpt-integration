@@ -1,3 +1,5 @@
+{% set settings = craft.app.getPlugins.getPlugin('chatgpt-integration').settings %}
+
 {% js %}
 
 $(document).ready(function() {
@@ -45,66 +47,70 @@ $(document).ready(function() {
         }
 
         sendRequest(prompt, query, input, hash);
-
     });
-
 });
 
 /*$('.open-modal').click(function(e) {
-    e.preventDefault();
-    let that = $(this);
-    let input = that.parent(".input").find("input, textarea");
-    let label = $('.field[data-layout-element="' + that.attr('data-layout-element') + '"]').find('label').text();
+e.preventDefault();
+let that = $(this);
+let input = that.parent(".input").find("input, textarea");
+let label = $('.field[data-layout-element="' + that.attr('data-layout-element') + '"]').find('label').text();
 
-    console.log('.field[data-layout-element="' + that.attr('data-layout-element') + '"]');
-    console.log(label);
+console.log('.field[data-layout-element="' + that.attr('data-layout-element') + '"]');
+console.log(label);
 
-    $('#my-awesome-modal header h2').text(label);
+$('#my-awesome-modal header h2').text(label);
 
-    var modal = new Garnish.Modal($('#my-awesome-modal'));
-    $('#my-awesome-modal').attr('data-layout-element', that.attr('data-layout-element'));
+var modal = new Garnish.Modal($('#my-awesome-modal'));
+$('#my-awesome-modal').attr('data-layout-element', that.attr('data-layout-element'));
 });*/
 
 function sendRequest(prompt, query, textField, hash) {
 
-    $.ajax({
-        type: "POST",
-        url: "https://api.openai.com/v1/chat/completions",
-        //url: "https://api.openai.com/v1/edits",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken }}");
-            },
-            data: JSON.stringify({
-                "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": prompt + query  }],
-                "temperature": 0.7,
-                "max_tokens": 256,
-                "top_p": 1,
-                "frequency_penalty": 0,
-                "presence_penalty": 0
-            }),
-            success: function(data) {
-                if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
-                    let textareaId = textField.attr('id');
-                    $R('#' + textareaId, 'source.setCode', data.choices[0].message.content);
-                } else {
-                    $(textField).val(data.choices[0].message.content);
-                }
-            },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        }).done(function(data) {
+$.ajax({
+    type: "POST",
+    url: "https://api.openai.com/v1/chat/completions",
+    //url: "https://api.openai.com/v1/edits",
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer {{ settings.getAccessToken }}");
+    },
+    data: JSON.stringify({
+        "model": "gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": prompt + query  }],
+        "temperature": 0.7,
+        "max_tokens": {{ settings.maxTokens }},
+        "top_p": 1,
+        "frequency_penalty": 0,
+        "presence_penalty": 0
+    }),
+    success: function(data) {
+        let result = data.choices[0].message.content;
+        let state = data.choices[0].finish_reason;
 
-        }).fail(function(data) {
-            alert(data.responseJSON.error.message);
-            if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
-                let textareaId = textField.attr('id');
-                $R('#' + textareaId, 'source.setCode', query);
-            } else {
-                $(textField).val(query);
-            }
-        });
-    }
+        if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            let textareaId = textField.attr('id');
+            $R('#' + textareaId, 'source.setCode', result);
+        } else {
+            $(textField).val(result);
+        }
+        if(state == 'length') {
+            alert({{ 'The reply has exceeded the specified maximum length. To fix this, either increase the value of the max_token setting or try telling chat-gpt to limit itself to a certain number of words.'|t('chatgpt-integration') }});
+        }}
+        },
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).done(function(data) {
+
+    }).fail(function(data) {
+        alert(data.responseJSON.error.message);
+        if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            let textareaId = textField.attr('id');
+            $R('#' + textareaId, 'source.setCode', query);
+        } else {
+            $(textField).val(query);
+        }
+    });
+}
 {% endjs %}
 
 {#<div id="my-awesome-modal" class="modal">

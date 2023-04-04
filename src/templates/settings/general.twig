@@ -20,20 +20,30 @@
             first: true,
         }) }}
 
-        {{ forms.autosuggestField({
-            label: 'API Access Token'|t('chatgpt-integration'),
-            name: 'accessToken',
-            value: settings.accessToken,
-            instructions: 'Access token for the Chat GPT API'|t('chatgpt-integration'),
-            suggestEnvVars: true,
-        }) }}
-
         {{ forms.lightSwitchField({
             label: 'Use page language'|t('chatgpt-integration'),
             name: 'usePageLang',
             value: settings.usePageLang,
             on: settings.usePageLang,
-            instructions: 'Always use current page language for query results.'|t('chatgpt-integration')
+            instructions: 'Always use current page language for query results.'|t('chatgpt-integration'),
+        }) }}
+
+        {{ forms.autosuggestField({
+            label: 'API: Access Token'|t('chatgpt-integration'),
+            name: 'accessToken',
+            value: settings.accessToken,
+            instructions: 'Access token for the ChatGPT API'|t('chatgpt-integration'),
+            suggestEnvVars: true,
+        }) }}
+
+        {{ forms.textField({
+            label: 'API: Max Tokens'|t('chatgpt-integration'),
+            name: 'maxTokens',
+            value: settings.maxTokens,
+            autofocus: true,
+            instructions: 'Maximum amount of tokens for chatgpt\'s response (<a href="https://platform.openai.com/docs/introduction/tokens">https://platform.openai.com/docs/introduction/tokens</a>)'|t('chatgpt-integration'),
+            first: true,
+            type: 'number',
         }) }}
     {% endnamespace %}
 {% endblock %}

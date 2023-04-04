@@ -28,6 +28,11 @@ class SettingsModel extends Model
     public bool $usePageLang = true;
 
     /**
+     * @var int
+     */
+    public int $maxTokens = 256;
+
+    /**
      * @return string
      */
     public function getAccessToken(): string
