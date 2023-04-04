@@ -20,11 +20,12 @@
             first: true,
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: 'API Access Token'|t('chatgpt-integration'),
             name: 'accessToken',
             value: settings.accessToken,
             instructions: 'Access token for the Chat GPT API'|t('chatgpt-integration'),
+            suggestEnvVars: true,
         }) }}
 
         {{ forms.lightSwitchField({

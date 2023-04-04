@@ -2,13 +2,16 @@
 
 namespace publishing\chatgptintegration\controllers;
 
+use craft\web\Controller;
 use publishing\chatgptintegration\models\PromptModel;
 use publishing\chatgptintegration\Plugin;
-use publishing\chatgptintegration\records\ChatgptIntegration_PromptRecord;
 use yii\web\Response;
 
-class PromptController extends \craft\web\Controller
+class PromptController extends Controller
 {
+    /**
+     * @return Response
+     */
     public function actionCreatePrompt(): Response
     {
         return $this->renderTemplate('chatgpt-integration/prompts/_new', ['prompt' => new PromptModel()]);
@@ -29,16 +32,14 @@ class PromptController extends \craft\web\Controller
         $promptModel->enabled = $request->getRequiredParam('enabled');
 
         if (!$promptModel->validate()) {
-            return $this->renderTemplate('chatgpt-integration/prompts/_edit', ['prompt' => $promptModel]);
+            return $this->renderTemplate('chatgpt-integration/prompts/_new', ['prompt' => $promptModel]);
         }
 
         if (Plugin::getInstance()->promptService->savePrompt($promptModel)) {
             return $this->redirect('chatgpt-integration/prompts');
         }
 
-        return $this->renderTemplate('chatgpt-integration/prompts/_edit', ['prompt' => $promptModel]);
-
-
+        return $this->renderTemplate('chatgpt-integration/prompts/_new', ['prompt' => $promptModel]);
     }
 
     /**
@@ -54,39 +55,33 @@ class PromptController extends \craft\web\Controller
     /**
      * @return void
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionUpdatePrompt()
     {
         $request = \Craft::$app->getRequest();
+        $model = new PromptModel;
 
-        /** @var ChatgptIntegration_PromptRecord $record */
-        $record = ChatgptIntegration_PromptRecord::find()->where(['id' => $request->getRequiredParam('id')])->one();
+        $model->id = $request->getRequiredParam('id');
+        $model->label = $request->getRequiredParam('label');
+        $model->promptTemplate = $request->getRequiredParam('promptTemplate');
+        $model->enabled = $request->getRequiredParam('enabled');
 
-        $record->label = $request->getRequiredParam('label');
-        $record->promptTemplate = $request->getRequiredParam('promptTemplate');
-        $record->enabled = $request->getRequiredParam('enabled');
+        if (!$model->validate()) {
+            return $this->renderTemplate('chatgpt-integration/prompts/_edit', ['prompt' => $model]);
+        }
 
-        $record->update();
+        Plugin::getInstance()->promptService->updatePrompt($model);
 
+        return $this->redirect('chatgpt-integration/prompts');
     }
 
     /**
      * @return mixed
-     * @throws \yii\web\BadRequestHttpException
      */
     public function actionDeletePrompt($id)
     {
         $record = Plugin::getInstance()->promptService->deletePrompt($id);
         return $this->redirect('chatgpt-integration/prompts');
-    }
-
-
-    protected function mapModelToRecord(PromptModel $model, ChatgptIntegration_PromptRecord $record): void
-    {
-        $record->label = $model->label;
-        $record->promptTemplate = $model->promptTemplate;
-        $record->enabled = $model->enabled;
     }
 }

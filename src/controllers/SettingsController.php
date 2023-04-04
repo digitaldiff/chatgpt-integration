@@ -7,6 +7,9 @@ use yii\web\Response;
 
 class SettingsController extends \craft\web\Controller
 {
+    /**
+     * @return Response
+     */
     public function actionSettings(): Response
     {
         $settings = Plugin::getInstance()->getSettings();

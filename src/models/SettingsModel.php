@@ -3,6 +3,7 @@
 namespace publishing\chatgptintegration\models;
 
 use craft\base\Model;
+use craft\helpers\App;
 
 /**
  * @var string $pluginName
@@ -26,4 +27,11 @@ class SettingsModel extends Model
      */
     public bool $usePageLang = true;
 
+    /**
+     * @return string
+     */
+    public function getAccessToken(): string
+    {
+        return App::parseEnv($this->accessToken);
+    }
 }

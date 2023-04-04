@@ -33,10 +33,24 @@ use craft\elements\Entry;
  */
 class Plugin extends BasePlugin
 {
+    /**
+     * @var string
+     */
     public string $schemaVersion = '1.0.0';
+
+    /**
+     * @var bool
+     */
     public bool $hasCpSettings = true;
+
+    /**
+     * @var bool
+     */
     public bool $hasCpSection = true;
 
+    /**
+     * @return array[]
+     */
     public static function config(): array
     {
         return [
@@ -45,6 +59,9 @@ class Plugin extends BasePlugin
         ];
     }
 
+    /**
+     * @return void
+     */
     public function init(): void
     {
         parent::init();
@@ -55,21 +72,32 @@ class Plugin extends BasePlugin
             $this->attachFunctions();
             $this->registerEvents();
         });
-
     }
 
+    /**
+     * @return void
+     */
     protected function setup(): void {
         $this->setComponents([
             'promptService' => PromptService::class,
         ]);
     }
 
+    /**
+     * @return Model|null
+     */
     protected function createSettingsModel(): ?Model
     {
         return new SettingsModel();
-
     }
 
+    /**
+     * @return string|null
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     */
     protected function settingsHtml(): ?string
     {
         return \Craft::$app->getView()->renderTemplate(
@@ -78,6 +106,9 @@ class Plugin extends BasePlugin
         );
     }
 
+    /**
+     * @return void
+     */
     private function attachFunctions(): void
     {
         Event::on(
@@ -96,6 +127,9 @@ class Plugin extends BasePlugin
         );
     }
 
+    /**
+     * @return void
+     */
     protected function registerEvents(): void
     {
         Event::on(
@@ -121,12 +155,17 @@ class Plugin extends BasePlugin
         );
     }
 
-
+    /**
+     * @return string
+     */
     public function getPluginName(): string
     {
         return $this->getSettings()->pluginName;
     }
 
+    /**
+     * @return array|null
+     */
     public function getCpNavItem(): ?array
     {
         $nav = parent::getCpNavItem();
@@ -149,6 +188,9 @@ class Plugin extends BasePlugin
         return $nav;
     }
 
+    /**
+     * @return mixed
+     */
     public function getSettingsResponse(): mixed
     {
         return Craft::$app->controller->redirect(UrlHelper::cpUrl('chatgpt-integration/settings'));

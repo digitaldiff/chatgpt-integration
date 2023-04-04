@@ -13,7 +13,9 @@ use craft\db\ActiveRecord;
  */
 class ChatgptIntegration_PromptRecord extends ActiveRecord
 {
-
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return '{{%chatgptintegration_prompt}}';

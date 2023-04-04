@@ -1,9 +1,7 @@
 <?php
 namespace publishing\chatgptintegration\migrations;
 
-use Craft;
 use craft\db\Migration;
-use craft\helpers\StringHelper;
 use publishing\chatgptintegration\records\ChatgptIntegration_PromptRecord;
 
 /**
@@ -31,6 +29,9 @@ class Install extends Migration
         return true;
     }
 
+    /**
+     * @return void
+     */
     protected function createTables(): void
     {
 
@@ -46,7 +47,10 @@ class Install extends Migration
         ]);
     }
 
-    protected function insertDefaultRows() {
+    /**
+     * @return void
+     */
+    protected function insertDefaultRows(): void {
         $this->insert(ChatgptIntegration_PromptRecord::tableName(), array(
             'label' => 'Shorten',
             'promptTemplate' => 'Shorten the following text:'
@@ -63,6 +67,9 @@ class Install extends Migration
         ));
     }
 
+    /**
+     * @return void
+     */
     protected function removeTables()
     {
         $tables = [

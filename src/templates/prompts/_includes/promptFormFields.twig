@@ -1,19 +1,19 @@
 {% import '_includes/forms' as forms %}
 
-    {{ forms.textField({
-        label: 'Label'|t('chatgpt-integration'),
-        name: 'label',
-        errors: prompt.getErrors('label'),
-        required: true,
-        first: true,
-        value: prompt.label
-    }) }}
+{{ forms.textField({
+    label: 'Label'|t('chatgpt-integration'),
+    name: 'label',
+    errors: prompt.getErrors('label'),
+    required: true,
+    first: true,
+    value: prompt.label
+}) }}
 
-    {{ forms.textAreaField({
-        label: 'Prompt Template'|t('chatgpt-integration'),
-        name: 'promptTemplate',
-        errors: prompt.getErrors('promptTemplate'),
-        required: true,
-        rows: 4,
-        value: prompt.promptTemplate,
-    }) }}
+{{ forms.textAreaField({
+    label: 'Prompt Template'|t('chatgpt-integration'),
+    name: 'promptTemplate',
+    errors: prompt.getErrors('promptTemplate'),
+    required: true,
+    rows: 4,
+    value: prompt.promptTemplate,
+}) }}

@@ -2,7 +2,6 @@
 
 $('.chatgpt-button').each(function () {
     let that = $(this);
-    //let hash = $(this).attr('data-hash');
     let input = that.parents('.field').find('.input input, .input textarea');
     if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
         let textareaId = input.attr('id');
@@ -13,13 +12,11 @@ $('.chatgpt-button').each(function () {
 
 });
 
-
 $('.doAi').click(function(e) {
     e.preventDefault();
     let that = $(this);
     let prompt = that.attr('data-prompt');
     let input = $('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').find('.input input, .input textarea');
-    //$('.field[data-layout-element="' + that.attr('data-hash') + '"] .input').find('input, textarea');
     let query = input.val();
     let hash = that.attr('data-hash');
 
@@ -30,9 +27,8 @@ $('.doAi').click(function(e) {
         input.val('Working ...');
     }
 
-
-    //$('.chatgpt-button button').attr('aria-expanded', false);
     sendRequest(prompt, query, input, hash);
+    //$('.chatgpt-button button').attr('aria-expanded', false);
 });
 
 /*$('.open-modal').click(function(e) {
@@ -55,9 +51,8 @@ function sendRequest(prompt, query, textField, hash) {
     $.ajax({
         type: "POST",
         url: "https://api.openai.com/v1/chat/completions",
-        //url: "https://api.openai.com/v1/edits",
         beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.accessToken }}");
+            xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken }}");
             },
             data: JSON.stringify({
                 "model": "gpt-3.5-turbo",
@@ -69,14 +64,10 @@ function sendRequest(prompt, query, textField, hash) {
                 "presence_penalty": 0
             }),
             success: function(data) {
-                console.log(data.choices[0].message.content);
-                console.log('button[data-hash="' + hash + '"]');
                 if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
-                    console.log('button[data-hash="' + hash + '"]');
                     let textareaId = textField.attr('id');
                     $R('#' + textareaId, 'source.setCode', data.choices[0].message.content);
                 } else {
-                    console.log(hash + ' text');
                     $(textField).val(data.choices[0].message.content);
                 }
             },
@@ -87,17 +78,15 @@ function sendRequest(prompt, query, textField, hash) {
         }).fail(function(data) {
             alert(data.responseJSON.error.message);
             if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
-                console.log(hash + ' redactor');
                 let textareaId = textField.attr('id');
                 $R('#' + textareaId, 'source.setCode', query);
             } else {
-                console.log(hash + ' text');
                 $(textField).val(query);
             }
-
         });
     }
 {% endjs %}
+
 {#<div id="my-awesome-modal" class="modal">
     <div id="modal-body" class="body">
         <header class="header">
