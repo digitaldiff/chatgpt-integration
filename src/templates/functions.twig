@@ -1,34 +1,53 @@
 {% js %}
 
-$('.chatgpt-button').each(function () {
-    let that = $(this);
-    let input = that.parents('.field').find('.input input, .input textarea');
-    if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
-        let textareaId = input.attr('id');
-        $('#textareaId').css('padding-right', '100px');
-    } else {
-        input.css('padding-right', '100px');
+$(document).ready(function() {
+
+    $('.chatgpt-button').each(function () {
+        let that = $(this);
+        //let hash = $(this).attr('data-hash');
+        let input = that.parents('.field').find('.input input, .input textarea');
+        if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            let textareaId = input.attr('id');
+            $('#textareaId').css('padding-right', '100px');
+        } else {
+            input.css('padding-right', '100px');
+        }
+    });
+
+    function setPadding() {
+        $('.chatgpt-button').each(function () {
+            let that = $(this);
+            let input = that.parents('.field').find('.input input, .input textarea');
+            if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+                let textareaId = input.attr('id');
+                $('#textareaId').css('padding-right', '100px');
+            } else {
+                input.css('padding-right', '100px');
+            }
+        });
     }
 
-});
+    $('body').on('click', '.chatgpt-menu a', function(clickEvent) {
+        clickEvent.stopPropagation();
+        clickEvent.preventDefault();
+        let that = $(this);
+        let prompt = that.attr('data-prompt');
+        let input = $('button[data-hash="' + that.attr('data-hash') + '"]').closest('.input').find('input, textarea').first();
+        //$('.field[data-layout-element="' + that.attr('data-hash') + '"] .input').find('input, textarea');
+        let query = input.val();
+        let hash = that.attr('data-hash');
 
-$('.doAi').click(function(e) {
-    e.preventDefault();
-    let that = $(this);
-    let prompt = that.attr('data-prompt');
-    let input = $('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').find('.input input, .input textarea');
-    let query = input.val();
-    let hash = that.attr('data-hash');
+        if ($('button[data-hash="' + that.attr('data-hash') + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            let textareaId = input.attr('id');
+            $R('#' + textareaId, 'source.setCode', 'Working ...');
+        } else {
+            input.val('Working ...');
+        }
 
-    if ($('button[data-hash="' + that.attr('data-hash') + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
-        let textareaId = input.attr('id');
-        $R('#' + textareaId, 'source.setCode', 'Working ...');
-    } else {
-        input.val('Working ...');
-    }
+        sendRequest(prompt, query, input, hash);
 
-    sendRequest(prompt, query, input, hash);
-    //$('.chatgpt-button button').attr('aria-expanded', false);
+    });
+
 });
 
 /*$('.open-modal').click(function(e) {
@@ -51,6 +70,7 @@ function sendRequest(prompt, query, textField, hash) {
     $.ajax({
         type: "POST",
         url: "https://api.openai.com/v1/chat/completions",
+        //url: "https://api.openai.com/v1/edits",
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", "Bearer {{ craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken }}");
             },
@@ -64,7 +84,7 @@ function sendRequest(prompt, query, textField, hash) {
                 "presence_penalty": 0
             }),
             success: function(data) {
-                if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+                if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
                     let textareaId = textField.attr('id');
                     $R('#' + textareaId, 'source.setCode', data.choices[0].message.content);
                 } else {
@@ -77,7 +97,7 @@ function sendRequest(prompt, query, textField, hash) {
 
         }).fail(function(data) {
             alert(data.responseJSON.error.message);
-            if ($('button[data-hash="' + hash + '"]').parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
                 let textareaId = textField.attr('id');
                 $R('#' + textareaId, 'source.setCode', query);
             } else {

@@ -21,22 +21,26 @@
 {% set currentLang = "" %}
 
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.usePageLang %}
-    {% for site in craft.app.sites.getAllSites () %}
+    {% for site in craft.app.sites.getAllSites() %}
         {% if site.handle == craft.app.request.getQueryParam('site') %}
             {% set currentLang = 'Using the locale ' ~ site.language %}
         {% endif %}
     {% endfor %}
+    {% if currentLang|length == 0 %}
+        {% set currentLang = 'Using the locale ' ~ craft.app.sites.getAllSites()[0].language %}
+    {% endif %}
 {% endif %}
 
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken|length %}
-    {%  if (" type=\"text\"" in input or "textarea" in input) and "neo-input" not in input %}
+    {%  if (" type=\"text\"" in input or "textarea" in input) and "neo-input" not in input and "matrix-field" not in input %}
+        {{ input }}
         {% set prompts = craft.chatgptIntegration.getPrompts(true) %}
         <div class="chatgpt-button">
             <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
-            <div id="1" class="menu menu--disclosure">
+            <div id="1" class="menu menu--disclosure chatgpt-menu">
                 <ul class="padded">
                     {% for item in prompts %}
-                        <li><a href="#" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                        <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
                     {% endfor %}
                 </ul>
                 <hr>
