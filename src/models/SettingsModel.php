@@ -33,6 +33,11 @@ class SettingsModel extends Model
     public int $maxTokens = 256;
 
     /**
+     * @var bool
+     */
+    public bool $showTranslationPrompts = true;
+
+    /**
      * @return string
      */
     public function getAccessToken(): string

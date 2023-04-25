@@ -20,6 +20,8 @@
 
 {% set currentLang = "" %}
 
+{% set displayTranslationPrompts = craft.app.getPlugins.getPlugin('chatgpt-integration').settings.showTranslationPrompts %}
+
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.usePageLang %}
     {% for site in craft.app.sites.getAllSites() %}
         {% if site.handle == craft.app.request.getQueryParam('site') %}
@@ -40,9 +42,16 @@
                 <ul class="padded">
                     {% for item in prompts %}
                         <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                    {% else %}
+                        {% if displayTranslationPrompts == false %}
+                            <li style="padding: 1em 0"><p>{{ 'No prompts found'|t('chatgpt-integration') }}</p></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
-                <hr>
+            {% if displayTranslationPrompts %}
+                {% if prompts|length %}
+                    <hr>
+                {% endif %}
                 <ul class="padded">
                     {% if craft.app.sites.getAllSites()|length > 1 %}
                         {% for site in craft.app.sites.getAllSites () %}
@@ -60,6 +69,7 @@
                         <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
                     </li>
                 </ul>#}
+            {% endif %}
             </div>
         </div>
     {% endif %}

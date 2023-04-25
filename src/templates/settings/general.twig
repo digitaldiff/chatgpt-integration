@@ -28,6 +28,14 @@
             instructions: 'Always use current page language for query results.'|t('chatgpt-integration'),
         }) }}
 
+        {{ forms.lightSwitchField({
+            label: 'Display default translation prompts.'|t('chatgpt-integration'),
+            name: 'showTranslationPrompts',
+            value: settings.showTranslationPrompts,
+            on: settings.showTranslationPrompts,
+            instructions: 'Provide default translation prompts based on the configured languages of your setup.'
+        }) }}
+
         {{ forms.autosuggestField({
             label: 'API: Access Token'|t('chatgpt-integration'),
             name: 'accessToken',
