@@ -34,43 +34,42 @@
 {% endif %}
 
 {% if craft.app.getPlugins.getPlugin('chatgpt-integration').settings.getAccessToken|length %}
-    {%  if (" type=\"text\"" in input or "textarea" in input) and "neo-input" not in input and "matrix-field" not in input %}
-        {% set prompts = craft.chatgptIntegration.getPrompts(true) %}
-        <div class="chatgpt-button">
-            <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
-            <div id="1" class="menu menu--disclosure chatgpt-menu">
-                <ul class="padded">
-                    {% for item in prompts %}
-                        <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
-                    {% else %}
-                        {% if displayTranslationPrompts == false %}
-                            <li style="padding: 1em 0"><p>{{ 'No prompts found'|t('chatgpt-integration') }}</p></li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            {% if displayTranslationPrompts %}
-                {% if prompts|length %}
-                    <hr>
-                {% endif %}
-                <ul class="padded">
-                    {% if craft.app.sites.getAllSites()|length > 1 %}
-                        {% for site in craft.app.sites.getAllSites () %}
-                            <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                    language: site.language
-                                } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                        language: site.language
-                                    } ) }}</a></li>
-                        {% endfor %}
+
+    {% set prompts = craft.chatgptIntegration.getPrompts(true) %}
+    <div class="chatgpt-button">
+        <button {{ attr(actionBtnAttributes) }}>ChatGPT</button>
+        <div id="1" class="menu menu--disclosure chatgpt-menu">
+            <ul class="padded">
+                {% for item in prompts %}
+                    <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                {% else %}
+                    {% if displayTranslationPrompts == false %}
+                        <li style="padding: 1em 0"><p>{{ 'No prompts found'|t('chatgpt-integration') }}</p></li>
                     {% endif %}
-                </ul>
-                {#<hr>
-                <ul class="padded">
-                    <li>
-                        <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
-                    </li>
-                </ul>#}
+                {% endfor %}
+            </ul>
+        {% if displayTranslationPrompts %}
+            {% if prompts|length %}
+                <hr>
             {% endif %}
-            </div>
+            <ul class="padded">
+                {% if craft.app.sites.getAllSites()|length > 1 %}
+                    {% for site in craft.app.sites.getAllSites () %}
+                        <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
+                                language: site.language
+                            } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
+                                    language: site.language
+                                } ) }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            {#<hr>
+            <ul class="padded">
+                <li>
+                    <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
+                </li>
+            </ul>#}
+        {% endif %}
         </div>
-    {% endif %}
+    </div>
 {% endif %}

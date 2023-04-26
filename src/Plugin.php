@@ -6,6 +6,7 @@ use Craft;
 use craft\base\Field;
 use craft\events\DefineFieldHtmlEvent;
 use craft\events\DefineHtmlEvent;
+use craft\events\ModelEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
@@ -108,13 +109,42 @@ class Plugin extends BasePlugin
      */
     private function attachFunctions(): void
     {
+        /**
+         * Attach button to selected fields.
+         */
         Event::on(
             Field::class,
             Field::EVENT_DEFINE_INPUT_HTML,
             static function (DefineFieldHtmlEvent $event) {
-                $event->html .= Craft::$app->view->renderTemplate('chatgpt-integration/form.twig', ['input' => $event->html, 'hash' => StringHelper::UUID() ] );
+                /** @var SettingsModel $settings */
+                $settings = Plugin::getInstance()->getSettings();
+
+                if (array_key_exists($event->sender->id, $settings->enabledFields) && $settings->enabledFields[$event->sender->id]){
+                    $event->html .= Craft::$app->view->renderTemplate('chatgpt-integration/form.twig', [ 'event' => $event, 'hash' => StringHelper::UUID()] );
+                }
             }
         );
+
+        /**
+         * Warn user in case there are no selected fields.
+         */
+        Event::on(
+            Plugin::class,
+            Plugin::EVENT_AFTER_SAVE_SETTINGS,
+            function (Event $event) {
+
+                /** @var SettingsModel $settings */
+                $settings = Plugin::getInstance()->getSettings();
+
+                if (!in_array(true, $settings->enabledFields, false)){
+                    Craft::$app->getSession()->setError('ChatGPT-Integrations currently has no fields to attach to!');
+                }
+            }
+        );
+
+        /**
+         * Load twig with js code.
+         */
         Event::on(
             Entry::class,
             Entry::EVENT_DEFINE_SIDEBAR_HTML,
@@ -138,7 +168,9 @@ class Plugin extends BasePlugin
                 $event->rules['chatgpt-integration/prompts/edit/<id:\d+>'] = 'chatgpt-integration/prompt/edit-prompt';
                 $event->rules['chatgpt-integration/prompts/delete/<id:\d+>'] = 'chatgpt-integration/prompt/delete-prompt';
 
-                $event->rules['chatgpt-integration/settings/general'] = 'chatgpt-integration/settings/settings';
+                $event->rules['chatgpt-integration/settings/general'] = 'chatgpt-integration/settings/general';
+                $event->rules['chatgpt-integration/settings/api'] = 'chatgpt-integration/settings/api';
+                $event->rules['chatgpt-integration/settings/fields'] = 'chatgpt-integration/settings/fields';
             }
         );
 

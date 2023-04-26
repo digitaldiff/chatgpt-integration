@@ -38,6 +38,11 @@ class SettingsModel extends Model
     public bool $showTranslationPrompts = true;
 
     /**
+     * @var array
+     */
+    public array $enabledFields = [];
+
+    /**
      * @return string
      */
     public function getAccessToken(): string

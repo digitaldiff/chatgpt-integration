@@ -1,0 +1,56 @@
+{% extends 'chatgpt-integration/_layouts/settings' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Settings' %}
+{% set selectedSubnavItem = 'settings' %}
+
+{% set fullPageForm = true %}
+
+{% block content %}
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="chatgpt-integration">
+    {% namespace 'settings' %}
+
+        {% set fields = craft.app.fields.getAllFields %}
+
+        {% if fields|length %}
+            <div class="tableview tablepane">
+                <table class="data fullwidth">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ 'Label' |t('chatgpt-integration') }}</th>
+                        <th scope="col">{{ 'Handle' |t('chatgpt-integration') }}</th>
+                        <th scope="col">{{ 'Field type' |t('chatgpt-integration') }}</th>
+                        <th scope="col">{{ 'Group' |t('chatgpt-integration') }}</th>
+                        <th class="thin">{{ 'Enabled' |t('chatgpt-integration') }}</th>
+
+                    </tr>
+                    </thead>
+                    {% for field in fields %}
+                        <tbody>
+                        <tr class="s-{{ field.id }}">
+                            <td class="label-column">{{ field.name }}</td>
+                            <td class="handle-column">{{ field.handle }}</td>
+                            <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
+                            <td class="group-column">{{ field.group }}</td>
+                            <td class="enabled-column">
+                                {{ forms.lightswitch({
+                                    name: 'enabledFields['~field.id~'].key',
+                                    on: settings.enabledFields[field.id]
+                                }) }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div>
+                <p>{{ 'No fields exist yet.'|t('chatgpt-integration') }}</p>
+            </div>
+        {% endif %}
+
+    {% endnamespace %}
+{% endblock %}
+

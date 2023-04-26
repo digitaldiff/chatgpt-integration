@@ -21,4 +21,12 @@ class ChatgptIntegrationVariable
     {
         return Plugin::getInstance()->promptService->getPrompts($enabled);
     }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public function getClass($object)
+    {
+        return (new \ReflectionClass($object))->getName();
+    }
 }

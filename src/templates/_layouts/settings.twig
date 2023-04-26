@@ -8,9 +8,13 @@
 {% set selectedSubnavItem = 'settings' %}
 
 {% set navItems = {
-    'Settings-heading': { heading: "Settings"|t('chatgpt-integration') },
+    'settings-heading': { heading: "Settings"|t('chatgpt-integration') },
     'general': { title: "General"|t('chatgpt-integration') },
+    'fields': { title: "Fields"|t('chatgpt-integration') },
+    'api': { title: "API"|t('chatgpt-integration') },
 } %}
+
+{% set activeTab = craft.app.request.getSegment(3) ?? 'general' %}
 
 {% block sidebar %}
     <nav>
@@ -22,7 +26,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ url('chatgpt-integration/settings/'~ key) }}" class="sel">{{ element.title }}</a>
+                        <a href="{{ url('chatgpt-integration/settings/'~ key) }}" {{ activeTab == key ? 'class="sel"' }}>{{ element.title }}</a>
                     </li>
                 {% endif %}
             {% endfor %}

@@ -36,23 +36,6 @@
             instructions: 'Provide default translation prompts based on the configured languages of your setup.'
         }) }}
 
-        {{ forms.autosuggestField({
-            label: 'API: Access Token'|t('chatgpt-integration'),
-            name: 'accessToken',
-            value: settings.accessToken,
-            instructions: 'Access token for the ChatGPT API'|t('chatgpt-integration'),
-            suggestEnvVars: true,
-        }) }}
-
-        {{ forms.textField({
-            label: 'API: Max Tokens'|t('chatgpt-integration'),
-            name: 'maxTokens',
-            value: settings.maxTokens,
-            autofocus: true,
-            instructions: 'Maximum amount of tokens for chatgpt\'s response (<a href="https://platform.openai.com/docs/introduction/tokens">https://platform.openai.com/docs/introduction/tokens</a>)'|t('chatgpt-integration'),
-            first: true,
-            type: 'number',
-        }) }}
     {% endnamespace %}
 {% endblock %}
 
