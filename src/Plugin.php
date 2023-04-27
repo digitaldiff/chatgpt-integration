@@ -137,7 +137,11 @@ class Plugin extends BasePlugin
                 $settings = Plugin::getInstance()->getSettings();
 
                 if (!in_array(true, $settings->enabledFields, false)){
-                    Craft::$app->getSession()->setError('ChatGPT-Integrations currently has no fields to attach to!');
+                    Craft::$app->getSession()->setError('ChatGPT-Integration currently has no fields to attach to!');
+                }
+
+                if ($settings->accessToken === ''){
+                    Craft::$app->getSession()->setError('API Access Token required .');
                 }
             }
         );
