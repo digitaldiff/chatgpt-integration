@@ -39,13 +39,40 @@
                             <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
                             <td class="group-column">{{ field.group }}</td>
                             <td class="enabled-column">
-                                {{ forms.lightswitch({
-                                    name: 'enabledFields['~field.id~'].key',
-                                    on: settings.enabledFields|length and settings.enabledFields[field.id]
-                                }) }}
+                                {% if craft.chatgptIntegration.getClass(field) != "craft\\fields\\Matrix" %}
+                                    {{ forms.lightswitch({
+                                        name: 'enabledFields['~field.id~'].key',
+                                        on: settings.enabledFields|length and settings.enabledFields[field.id] is defined and settings.enabledFields[field.id]
+                                    }) }}
+                                {% endif %}
                             </td>
                         </tr>
                         </tbody>
+
+                        {% if craft.chatgptIntegration.getClass(field) == "craft\\fields\\Matrix" %}
+                            {% for block in field.getBlockTypes() %}
+                                {% for matrixField in block.customFields %}
+                                    <tbody>
+                                    <tr class="s-{{ matrixField.id }}">
+                                        <td class="label-column" style="text-indent: 2em;">{{ block.name }}: {{ matrixField.name }}</td>
+                                        <td class="handle-column">
+                                            <div id="fields-handle-attribute" class="code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ matrixField.handle }}')">
+                                                <input type="text" value="{{ matrixField.handle }}" readonly="" size="{{ matrixField.handle|length }}" tabindex="-1">
+                                                <span data-icon="clipboard" aria-hidden="true"></span>
+                                            </div></td>
+                                        <td class="group-column">{{ craft.chatgptIntegration.getClass(matrixField) }}</td>
+                                        <td class="group-column">{{ matrixField.group ?? field.group }}</td>
+                                        <td class="enabled-column">
+                                            {{ forms.lightswitch({
+                                                name: 'enabledFields['~matrixField.id~'].key',
+                                                on: settings.enabledFields|length and settings.enabledFields[matrixField.id] is defined and settings.enabledFields[matrixField.id]
+                                            }) }}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
                     {% endfor %}
                 </table>
             </div>

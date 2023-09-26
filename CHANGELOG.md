@@ -1,15 +1,22 @@
 # Release Notes for chatgpt-integration
 
+## 1.0.4 - 2023-09-26
+### Added
+- Added the option to enable or disable individual fields inside matrix fields.
+
+### Fixed
+- Fixed an issue where an error could occur upon creating new fields. (#5)
+
 ## 1.0.3 - 2023-04-27
 > {warning} Once you have installed the update, you need to head to the settings page and select which fields the prompts should be displayed for.
 
 ### Added
 - Added the option to enable or disable individual fields in the settings.
 - Added the option to disable the default translation prompts.
-- Added warning when saving settings without an api token
+- Added warning when saving settings without an api token.
 
 ### Changed
-- Divided settings over three sup-pages for clarity
+- Divided settings over three sup-pages for clarity.
 
 ## 1.0.2 - 2023-04-04
 
