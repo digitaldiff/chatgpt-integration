@@ -1,5 +1,9 @@
 # Release Notes for chatgpt-integration
 
+## 1.0.5 - 2024-03-20
+### Changed
+- Transfer ownership of plugin
+
 ## 1.0.4 - 2023-09-26
 ### Added
 - Added the option to enable or disable individual fields inside matrix fields.

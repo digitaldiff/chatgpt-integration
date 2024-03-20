@@ -32,7 +32,7 @@ Open your terminal and run the following commands:
 cd /path/to/my-project.test
 
 # tell Composer to load the plugin
-composer require 3w-publishing/craft-chatgpt-integration
+composer require digitaldiff/craft-chatgpt-integration
 
 # tell Craft to install the plugin
 ./craft plugin/install chatgpt-integration

@@ -1,10 +1,10 @@
 {
-    "name": "3w-publishing/craft-chatgpt-integration",
+    "name": "digitaldiff/craft-chatgpt-integration",
     "description": "Integration for ChatGPT",
     "type": "craft-plugin",
     "license": "proprietary",
     "support": {
-        "email": "support@3w-publishing.ch"
+        "email": "support@diff.ch"
     },
     "require": {
         "php": ">=8.0.2",
@@ -21,7 +21,7 @@
     "extra": {
         "handle": "chatgpt-integration",
         "name": "ChatGPT Integration",
-        "developer": "3w-Publishing",
+        "developer": "diff. Kommunikation AG",
         "documentationUrl": ""
     },
     "scripts": {
