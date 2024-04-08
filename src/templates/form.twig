@@ -49,26 +49,28 @@
                 {% endfor %}
             </ul>
         {% if displayTranslationPrompts %}
-            {% if prompts|length %}
-                <hr>
-            {% endif %}
-            <ul class="padded">
-                {% if craft.app.sites.getAllSites()|length > 1 %}
-                    {% for site in craft.app.sites.getAllSites () %}
-                        <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                language: site.language
-                            } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                    language: site.language
-                                } ) }}</a></li>
-                    {% endfor %}
+            {% set allSites = craft.app.sites.getAllSites() %}
+
+            {% if allSites|length %}
+                {% if prompts|length %}
+                    <hr>
                 {% endif %}
-            </ul>
-            {#<hr>
-            <ul class="padded">
-                <li>
-                    <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
-                </li>
-            </ul>#}
+                <ul class="padded">
+                    {% if allSites|length %}
+                        {% for site in allSites %}
+                            {% set translationText = 'Translate to {language}'|t('chatgpt-integration', params = { language: site.language }) %}
+                            <li><a href="#"
+                                    class="doAi"
+                                    data-hash="{{ hash }}"
+                                    data-prompt="Translate to {{ site.language }}: "
+                                    type="button"
+                                    role="button"
+                                    aria-label="{{ translationText }}">
+                                    {{ translationText }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            {% endif %}
         {% endif %}
         </div>
     </div>

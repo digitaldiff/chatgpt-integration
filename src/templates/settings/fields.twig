@@ -22,7 +22,7 @@
                         <th scope="col">{{ 'Label' |t('chatgpt-integration') }}</th>
                         <th scope="col">{{ 'Handle' |t('chatgpt-integration') }}</th>
                         <th scope="col">{{ 'Field type' |t('chatgpt-integration') }}</th>
-                        <th scope="col">{{ 'Group' |t('chatgpt-integration') }}</th>
+                        {#<th scope="col">{{ 'Group' |t('chatgpt-integration') }}</th>#}
                         <th class="thin">{{ 'Enabled' |t('chatgpt-integration') }}</th>
 
                     </tr>
@@ -37,7 +37,7 @@
                                     <span data-icon="clipboard" aria-hidden="true"></span>
                                 </div></td>
                             <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
-                            <td class="group-column">{{ field.group }}</td>
+                            {#<td class="group-column">{{ field.group }}</td>#}
                             <td class="enabled-column">
                                 {% if craft.chatgptIntegration.getClass(field) != "craft\\fields\\Matrix" %}
                                     {{ forms.lightswitch({

@@ -25,9 +25,7 @@ class PromptService extends Component
             $prompts =  $prompts->where(['enabled' => true]);
         }
 
-        $prompts =  $prompts->all();
-
-        foreach($prompts as $prompt) {
+        foreach($prompts->all() as $prompt) {
             $result[] = $this->mapToModel($prompt);
         }
 

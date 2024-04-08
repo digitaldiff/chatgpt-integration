@@ -6,9 +6,15 @@
     "support": {
         "email": "support@diff.ch"
     },
+    "authors": [
+        {
+            "name": "diff. Kommunikation AG",
+            "homepage": "https://www.diff.ch/"
+        }
+    ],
     "require": {
-        "php": ">=8.0.2",
-        "craftcms/cms": "^4.0.0"
+        "php": ">=8.2.0",
+        "craftcms/cms": "^5.0.0"
     },
     "require-dev": {
         "craftcms/ecs": "dev-main"
