@@ -25,7 +25,6 @@ class Install extends Migration
     public function safeDown(): bool
     {
         $this->removeTables();
-
         return true;
     }
 
@@ -34,13 +33,15 @@ class Install extends Migration
      */
     protected function createTables(): void
     {
-
         $this->archiveTableIfExists(ChatgptIntegration_PromptRecord::tableName());
         $this->createTable(ChatgptIntegration_PromptRecord::tableName(), [
             'id' => $this->primaryKey(),
             'label' => $this->string()->notNull(),
             'promptTemplate' => $this->string()->notNull(),
             'enabled' => $this->boolean()->notNull()->defaultValue(true),
+            'temperature' => $this->float()->notNull()->defaultValue(1),
+            'frequencyPenalty' => $this->float()->notNull()->defaultValue(0),
+            'presencePenalty' => $this->float()->notNull()->defaultValue(0),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),

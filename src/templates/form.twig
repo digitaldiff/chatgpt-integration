@@ -2,10 +2,10 @@
     class: ['btn', '', '', 'menubtn'],
     type: 'button',
     role: 'button',
-    title: 'Actions'|t('neo'),
+    title: 'Actions'|t('chatgpt-integration'),
     aria: {
         controls: 1,
-        label: "test button",
+        label: "ChatGPT Dropdown",
     },
     data: {
         'disclosure-trigger': true,
@@ -41,7 +41,18 @@
         <div id="1" class="menu menu--disclosure chatgpt-menu">
             <ul class="padded">
                 {% for item in prompts %}
-                    <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                    <li><a
+                            href="javascript:void(0)"
+                            class="doAi"
+                            type="button"
+                            role="button"
+                            data-hash="{{ hash }}"
+                            data-prompt="{{ currentLang }} {{ item.promptTemplate }}: "
+                            aria-label="{{ item.label }}"
+                            data-prompt-temperature="{{ item.temperature }}"
+                            data-prompt-frequencyPenalty="{{ item.frequencyPenalty }}"
+                            data-prompt-presencePenalty="{{ item.presencePenalty }}"
+                        >{{ item.label }}</a></li>
                 {% else %}
                     {% if displayTranslationPrompts == false %}
                         <li style="padding: 1em 0"><p>{{ 'No prompts found'|t('chatgpt-integration') }}</p></li>
@@ -75,3 +86,16 @@
         </div>
     </div>
 {% endif %}
+
+
+{% js %}
+    $(function() {
+        let button = $('button[data-hash="{{ hash }}"]');
+        let ckEditor = button.closest('[data-type*="ckeditor"]');
+
+        if (ckEditor.length > 0) {
+           $(button).css('top', 'calc(var(--ck-font-size-base) * 3.2)');
+           ckEditor.addClass('chatgpt-padding');
+        }
+    });
+{% endjs %}

@@ -37,7 +37,7 @@ class Plugin extends BasePlugin
     /**
      * @var string
      */
-    public string $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.1';
 
     /**
      * @var bool
@@ -119,8 +119,16 @@ class Plugin extends BasePlugin
                 /** @var SettingsModel $settings */
                 $settings = Plugin::getInstance()->getSettings();
 
-                if (array_key_exists($event->sender->id, $settings->enabledFields) && $settings->enabledFields[$event->sender->id]){
-                    $event->html .= Craft::$app->view->renderTemplate('chatgpt-integration/form.twig', [ 'event' => $event, 'hash' => StringHelper::UUID()] );
+                $settingKey = $event->sender->layoutElement->layout->provider->handle . '_' . $event->sender->handle;
+
+                if (
+                    array_key_exists($settingKey, $settings->enabledFields)
+                    && $settings->enabledFields[$settingKey]
+                    && $settings->getAccessToken() !== '')
+                {
+                    $event->html .= Craft::$app->view->renderTemplate('chatgpt-integration/form.twig', [
+                        'event' => $event, 'hash' => StringHelper::UUID()
+                    ]);
                 }
             }
         );
@@ -137,11 +145,11 @@ class Plugin extends BasePlugin
                 $settings = Plugin::getInstance()->getSettings();
 
                 if (!in_array(true, $settings->enabledFields, false)){
-                    Craft::$app->getSession()->setError('ChatGPT-Integration currently has no fields to attach to!');
+                    Craft::$app->getSession()->setError(Craft::t('chatgpt-integration', 'ChatGPT-Integration currently has no fields to attach to!'));
                 }
 
                 if ($settings->accessToken === ''){
-                    Craft::$app->getSession()->setError('API Access Token required .');
+                    Craft::$app->getSession()->setError(Craft::t('chatgpt-integration', 'API Access Token required .'));
                 }
             }
         );

@@ -29,4 +29,18 @@ class ChatgptIntegrationVariable
     {
         return (new \ReflectionClass($object))->getName();
     }
+
+    public function getFieldToTypeFieldMap()
+    {
+        $entryTypes = \Craft::$app->getEntries()->getAllEntryTypes();
+        $typeFieldList = [];
+
+        foreach ($entryTypes as $type) {
+            foreach ($type->getFieldLayout()->getCustomFields() as $customField) {
+                $typeFieldList[$customField->getId()][$type->id] = $type;
+            }
+        }
+
+        return $typeFieldList;
+    }
 }

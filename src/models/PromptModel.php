@@ -22,6 +22,19 @@ class PromptModel extends Model
     public string $promptTemplate = '';
 
     /**
+     * @var float
+     */
+    public float $temperature = 1.0;
+    /**
+     * @var float
+     */
+    public float $frequencyPenalty = 0.0;
+    /**
+     * @var float
+     */
+    public float $presencePenalty = 0.0;
+
+    /**
      * @var bool
      */
     public bool $enabled = true;

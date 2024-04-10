@@ -12,76 +12,95 @@
     <input type="hidden" name="pluginHandle" value="chatgpt-integration">
     {% namespace 'settings' %}
 
-        {% set fields = craft.app.fields.getAllFields %}
+        {% set fields = craft.app.fields.allFields %}
+        {% set fieldTypeMap = craft.chatgptIntegration.getFieldToTypeFieldMap %}
 
-        {% if fields|length %}
-            <div class="tableview tablepane">
-                <table class="data fullwidth">
-                    <thead>
-                    <tr>
-                        <th scope="col">{{ 'Label' |t('chatgpt-integration') }}</th>
-                        <th scope="col">{{ 'Handle' |t('chatgpt-integration') }}</th>
-                        <th scope="col">{{ 'Field type' |t('chatgpt-integration') }}</th>
-                        {#<th scope="col">{{ 'Group' |t('chatgpt-integration') }}</th>#}
-                        <th class="thin">{{ 'Enabled' |t('chatgpt-integration') }}</th>
+        {% set entryTypes = craft.app.entries.allEntryTypes %}
 
-                    </tr>
-                    </thead>
-                    {% for field in fields %}
-                        <tbody>
-                        <tr class="s-{{ field.id }}">
-                            <td class="label-column">{{ field.name }}</td>
-                            <td class="handle-column">
-                                <div id="fields-handle-attribute" class="code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ field.handle }}')">
-                                    <input type="text" value="{{ field.handle }}" readonly="" size="{{ field.handle|length }}" tabindex="-1">
-                                    <span data-icon="clipboard" aria-hidden="true"></span>
-                                </div></td>
-                            <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
-                            {#<td class="group-column">{{ field.group }}</td>#}
-                            <td class="enabled-column">
-                                {% if craft.chatgptIntegration.getClass(field) != "craft\\fields\\Matrix" %}
-                                    {{ forms.lightswitch({
-                                        name: 'enabledFields['~field.id~'].key',
-                                        on: settings.enabledFields|length and settings.enabledFields[field.id] is defined and settings.enabledFields[field.id]
-                                    }) }}
-                                {% endif %}
-                            </td>
+        {% for entryType in entryTypes %}
+            {% if entryType.fieldlayout.customFields|length %}
+                <h3 class="table-heading">{{ entryType.name }} (
+                    <div class="fields-handle-attribute code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ entryType.handle }}')">
+                        <input type="text" value="{{ entryType.handle }}" readonly="" size="{{ entryType.handle|length }}" tabindex="-1">
+                        <span data-icon="clipboard" aria-hidden="true"></span>
+                    </div>
+                )</h3>
+
+                <div class="tableview tablepane">
+                    <table class="data fullwidth">
+                        <thead>
+                        <tr>
+                            <th scope="col">{{ 'Label' |t('chatgpt-integration') }}</th>
+                            <th scope="col">{{ 'Handle' |t('chatgpt-integration') }}</th>
+                            <th scope="col">{{ 'Field type' |t('chatgpt-integration') }}</th>
+                            <th class="thin">{{ 'Enabled' |t('chatgpt-integration') }}</th>
                         </tr>
-                        </tbody>
+                        </thead>
+                        {% for field in entryType.fieldlayout.customFields %}
+                            <tbody>
+                            <tr class="s-{{ field.id }}">
+                                <td class="label-column">{{ field.name }}</td>
+                                <td class="handle-column">
+                                    <div class="fields-handle-attribute code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ field.handle }}')">
+                                        <input type="text" value="{{ field.handle }}" readonly="" size="{{ field.handle|length }}" tabindex="-1">
+                                        <span data-icon="clipboard" aria-hidden="true"></span>
+                                    </div></td>
+                                <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
+                                <td class="enabled-column">
+                                    {% if craft.chatgptIntegration.getClass(field) != "craft\\fields\\Matrix" %}
+                                        {{ forms.lightswitch({
+                                            name: 'enabledFields[' ~ entryType.handle ~ '_' ~field.handle~'].key',
+                                            on: settings.enabledFields|length and settings.enabledFields[ entryType.handle ~ '_' ~field.handle] is defined and settings.enabledFields[ entryType.handle ~ '_' ~field.handle]
+                                        }) }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            </tbody>
 
-                        {% if craft.chatgptIntegration.getClass(field) == "craft\\fields\\Matrix" %}
-                            {% for block in field.getBlockTypes() %}
-                                {% for matrixField in block.customFields %}
-                                    <tbody>
-                                    <tr class="s-{{ matrixField.id }}">
-                                        <td class="label-column" style="text-indent: 2em;">{{ block.name }}: {{ matrixField.name }}</td>
-                                        <td class="handle-column">
-                                            <div id="fields-handle-attribute" class="code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ matrixField.handle }}')">
-                                                <input type="text" value="{{ matrixField.handle }}" readonly="" size="{{ matrixField.handle|length }}" tabindex="-1">
-                                                <span data-icon="clipboard" aria-hidden="true"></span>
-                                            </div></td>
-                                        <td class="group-column">{{ craft.chatgptIntegration.getClass(matrixField) }}</td>
-                                        <td class="group-column">{{ matrixField.group ?? field.group }}</td>
-                                        <td class="enabled-column">
-                                            {{ forms.lightswitch({
-                                                name: 'enabledFields['~matrixField.id~'].key',
-                                                on: settings.enabledFields|length and settings.enabledFields[matrixField.id] is defined and settings.enabledFields[matrixField.id]
-                                            }) }}
-                                        </td>
-                                    </tr>
-                                    </tbody>
+                            {% if craft.chatgptIntegration.getClass(field) == "craft\\fields\\Matrix" %}
+                                {% for block in field.getBlockTypes() %}
+                                    {% for matrixField in block.customFields %}
+                                        <tbody>
+                                        <tr class="s-{{ matrixField.id }}">
+                                            <td class="label-column" style="text-indent: 2em;">{{ block.name }}: {{ matrixField.name }}</td>
+                                            <td class="handle-column">
+                                                <div class="fields-handle-attribute code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ matrixField.handle }}')">
+                                                    <input type="text" value="{{ matrixField.handle }}" readonly="" size="{{ matrixField.handle|length }}" tabindex="-1">
+                                                    <span data-icon="clipboard" aria-hidden="true"></span>
+                                                </div></td>
+                                            <td class="group-column">{{ craft.chatgptIntegration.getClass(matrixField) }}</td>
+                                            <td class="group-column">{{ matrixField.group ?? field.group }}</td>
+                                            <td class="enabled-column">
+                                                {{ forms.lightswitch({
+                                                    name: 'enabledFields[' ~ entryType.handle ~ '_' ~field.handle~'].key',
+                                                    on: settings.enabledFields|length and settings.enabledFields[entryType.handle ~ '_' ~field.handle] is defined and settings.enabledFields[ entryType.handle ~ '_' ~field.handle]
+                                                }) }}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                </table>
-            </div>
-        {% else %}
-            <div>
-                <p>{{ 'No fields exist yet.'|t('chatgpt-integration') }}</p>
-            </div>
-        {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+                <div>
+                    <p>{{ 'No fields exist yet.'|t('chatgpt-integration') }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
 
     {% endnamespace %}
 {% endblock %}
 
+{% css %}
+    .table-heading {
+        margin-bottom: 2rem;
+        margin-top: 3rem;
+    }
+    /* first heading */
+    input + .table-heading {
+        margin-top: 0;
+    }
+{% endcss %}

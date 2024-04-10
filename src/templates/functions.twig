@@ -1,5 +1,7 @@
 {% set settings = craft.app.getPlugins.getPlugin('chatgpt-integration').settings %}
 
+{# TDOD GET PROMPT AND PROMPT SETTINGS #}
+
 {% js %}
 
 $(function() {
@@ -11,6 +13,8 @@ $(function() {
         if (that.parents('.field').attr('data-type') == 'craft\\redactor\\Field') {
             let textareaId = input.attr('id');
             $('#textareaId').css('padding-right', '100px');
+        } else if (that.parents('.field').attr('data-type') == 'craft\\ckeditor\\Field') {
+
         } else {
             input.css('padding-right', '100px');
         }
@@ -33,20 +37,25 @@ $(function() {
         clickEvent.stopPropagation();
         clickEvent.preventDefault();
         let that = $(this);
-        let prompt = that.attr('data-prompt');
         let input = $('button[data-hash="' + that.attr('data-hash') + '"]').closest('.input').find('input, textarea').first();
         //$('.field[data-layout-element="' + that.attr('data-hash') + '"] .input').find('input, textarea');
         let query = input.val();
         let hash = that.attr('data-hash');
 
-        if ($('button[data-hash="' + that.attr('data-hash') + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
+        let field = $('button[data-hash="' + that.attr('data-hash') + '"]').closest('.field');
+
+        if (field.attr('data-type') == 'craft\\redactor\\Field') {
             let textareaId = input.attr('id');
-            $R('#' + textareaId, 'source.setCode', 'Working ...');
+            $R('#' + textareaId, 'source.setCode', loadingText);
+
+        } else if (field.attr('data-type') == 'craft\\ckeditor\\Field') {
+            let ckEditor = field.find(".input .ck-editor__editable")[0].ckeditorInstance;
+            ckEditor.setData(loadingText);
         } else {
-            input.val('Working ...');
+            input.val(loadingText);
         }
 
-        sendRequest(prompt, query, input, hash);
+        sendRequest(that, query, input, hash);
     });
 });
 
@@ -75,20 +84,25 @@ function sendRequest(prompt, query, textField, hash) {
         },
         data: JSON.stringify({
             "model": "{{ settings.model }}",
-            "messages": [{"role": "user", "content": prompt + query  }],
-            "temperature": 0.7,
+            "messages": [{"role": "user", "content": prompt.attr('data-prompt') + query  }],
+            "temperature": parseFloat(prompt.attr('data-prompt-temperature')),
             "max_tokens": {{ settings.maxTokens }},
             "top_p": 1,
-            "frequency_penalty": 0,
-            "presence_penalty": 0
+            "frequency_penalty": parseFloat(prompt.attr('data-prompt-frequencyPenalty')),
+            "presence_penalty": parseFloat(prompt.attr('data-prompt-presencePenalty'))
         }),
         success: function(data) {
             let result = data.choices[0].message.content;
             let state = data.choices[0].finish_reason;
 
-            if ($('button[data-hash="' + hash + '"]').closest('.field').attr('data-type') == 'craft\\redactor\\Field') {
+            let field = $('button[data-hash="' + hash + '"]').closest('.field');
+
+            if (field.attr('data-type') == 'craft\\redactor\\Field') {
                 let textareaId = textField.attr('id');
                 $R('#' + textareaId, 'source.setCode', result);
+            } else if (field.attr('data-type') == 'craft\\ckeditor\\Field') {
+                let ckEditor = field.find(".input .ck-editor__editable")[0].ckeditorInstance;
+                ckEditor.setData(result);
             } else {
                 $(textField).val(result);
             }
@@ -110,7 +124,16 @@ function sendRequest(prompt, query, textField, hash) {
         }
     });
 }
+
+const loadingText = '{{ 'Working...'|t('chatgpt-integration') }}';
+
 {% endjs %}
+
+{% css %}
+.chatgpt-padding .ck-content {
+    padding-right: 5rem!important;
+}
+{% endcss %}
 
 {#<div id="my-awesome-modal" class="modal">
     <div id="modal-body" class="body">

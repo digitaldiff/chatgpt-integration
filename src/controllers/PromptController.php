@@ -66,6 +66,9 @@ class PromptController extends Controller
         $model->label = $request->getRequiredParam('label');
         $model->promptTemplate = $request->getRequiredParam('promptTemplate');
         $model->enabled = $request->getRequiredParam('enabled');
+        $model->temperature = $request->getRequiredParam('temperature');
+        $model->frequencyPenalty = $request->getRequiredParam('frequencyPenalty');
+        $model->presencePenalty = $request->getRequiredParam('presencePenalty');
 
         if (!$model->validate()) {
             return $this->renderTemplate('chatgpt-integration/prompts/_edit', ['prompt' => $model]);
