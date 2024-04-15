@@ -1,6 +1,6 @@
 # ChatGPT Integration
 
-The plugin adds a dropdown to every text field, as well as textarea and redactor.
+The plugin adds a dropdown to every text field, as well as textarea and CKEditor.
 
 With this functionality, text can be automatically corrected, translated, shortened and created. And of course many other functions can be added individually. There are almost no limits.
 
