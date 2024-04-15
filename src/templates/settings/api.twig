@@ -50,8 +50,8 @@
             {% endset %}
 
             {{ forms.field({
-                label: "Gateway plan"|t('app'),
-                instructions: "Choose the model to be used for your prompt requests.",
+                label: "API: Language Model"|t('chatgpt-integration'),
+                instructions: "Choose the model to be used for your prompt requests."|t('chatgpt-integration'),
                 id: 'model',
             }, modelInput) }}
         </div>
