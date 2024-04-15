@@ -43,6 +43,11 @@ class SettingsModel extends Model
     public array $enabledFields = [];
 
     /**
+     * @var string
+     */
+    public string $model = 'gpt-3.5-turbo';
+
+    /**
      * @return string
      */
     public function getAccessToken(): string

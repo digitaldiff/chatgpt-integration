@@ -2,10 +2,10 @@
     class: ['btn', '', '', 'menubtn'],
     type: 'button',
     role: 'button',
-    title: 'Actions'|t('neo'),
+    title: 'Actions'|t('chatgpt-integration'),
     aria: {
         controls: 1,
-        label: "test button",
+        label: "ChatGPT Dropdown"|t('chatgpt-integration'),
     },
     data: {
         'disclosure-trigger': true,
@@ -41,7 +41,18 @@
         <div id="1" class="menu menu--disclosure chatgpt-menu">
             <ul class="padded">
                 {% for item in prompts %}
-                    <li><a href="javascript:void(0)" class="doAi" type="button" role="button" data-hash="{{ hash }}" data-prompt="{{ currentLang }} {{ item.promptTemplate }}: " aria-label="{{ item.label }}">{{ item.label }}</a></li>
+                    <li><a
+                            href="javascript:void(0)"
+                            class="doAi"
+                            type="button"
+                            role="button"
+                            data-hash="{{ hash }}"
+                            data-prompt="{{ currentLang }} {{ item.promptTemplate }}: "
+                            aria-label="{{ item.label }}"
+                            data-prompt-temperature="{{ item.temperature }}"
+                            data-prompt-frequencyPenalty="{{ item.frequencyPenalty }}"
+                            data-prompt-presencePenalty="{{ item.presencePenalty }}"
+                        >{{ item.label }}</a></li>
                 {% else %}
                     {% if displayTranslationPrompts == false %}
                         <li style="padding: 1em 0"><p>{{ 'No prompts found'|t('chatgpt-integration') }}</p></li>
@@ -49,27 +60,43 @@
                 {% endfor %}
             </ul>
         {% if displayTranslationPrompts %}
-            {% if prompts|length %}
-                <hr>
-            {% endif %}
-            <ul class="padded">
-                {% if craft.app.sites.getAllSites()|length > 1 %}
-                    {% for site in craft.app.sites.getAllSites () %}
-                        <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                language: site.language
-                            } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
-                                    language: site.language
-                                } ) }}</a></li>
-                    {% endfor %}
+            {% set allSites = craft.app.sites.getAllSites() %}
+            {% if allSites|length %}
+                {% if prompts|length %}
+                    <hr>
                 {% endif %}
-            </ul>
-            {#<hr>
-            <ul class="padded">
-                <li>
-                    <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
-                </li>
-            </ul>#}
+                <ul class="padded">
+                    {% if allSites|length %}
+                        {% for site in allSites %}
+                            <li><a href="#" class="doAi" data-hash="{{ hash }}" data-prompt="Translate to {{ site.language }}: " type="button" role="button" aria-label="{{ 'Translate to {language}'|t('chatgpt-integration', params = {
+                                    language: site.language
+                                } ) }}">{{ 'Translate to {language}'|t('chatgpt-integration', params = {
+                                        language: site.language
+                                    } ) }}</a></li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                {#<hr>
+                <ul class="padded">
+                    <li>
+                        <a href="#" class="open-modal">{{ 'Senden'|t('chatgpt-integration') }}</a>
+                    </li>
+                </ul>#}
+            {% endif %}
         {% endif %}
         </div>
     </div>
 {% endif %}
+
+
+{% js %}
+$(function() {
+    let button = $('button[data-hash="{{ hash }}"]');
+        let ckEditor = button.closest('[data-type*="ckeditor"]');
+
+        if (ckEditor.length > 0) {
+           $(button).css('top', 'calc(var(--ck-font-size-base) * 3.2)');
+           ckEditor.addClass('chatgpt-padding');
+        }
+    });
+{% endjs %}

@@ -18,3 +18,73 @@
     rows: 4,
     value: prompt.promptTemplate,
 }) }}
+
+<div class="prompt-settings-row">
+    <div class="field prompt-temperature">
+        <div class="heading">
+            <label for="promptTemperature">{{ 'Temperature'|t('chatgpt-integration') }}</label>
+        </div>
+        <div class="flex">
+            <input
+                    id="temperature"
+                    name="temperature"
+                    type="range"
+                    step="0.1"
+                    min="0"
+                    max="2"
+                    value="{{ prompt.temperature }}"
+                    oninput="this.nextElementSibling.value = this.value"
+            >
+            <output>{{ prompt.temperature }}</output>
+        </div>
+    </div>
+
+
+    <div class="field prompt-frequency-penalty">
+        <div class="heading">
+            <label for="promptFrequencyPenalty">{{ 'Frequency Penalty'|t('chatgpt-integration') }}</label>
+        </div>
+        <div class="flex">
+            <input
+                    id="frequencyPenalty"
+                    name="frequencyPenalty"
+                    type="range"
+                    step="0.1"
+                    min="0"
+                    max="2"
+                    value="{{ prompt.frequencyPenalty }}"
+                    oninput="this.nextElementSibling.value = this.value"
+            >
+            <output>{{ prompt.frequencyPenalty }}</output>
+        </div>
+    </div>
+
+    <div class="field prompt-presence-penalty">
+        <div class="heading">
+            <label for="presencePenalty">{{ 'Presence Penalty'|t('chatgpt-integration') }}</label>
+        </div>
+        <div class="flex">
+            <input
+                    id="presencePenalty"
+                    name="presencePenalty"
+                    type="range"
+                    step="0.1"
+                    min="0"
+                    max="2"
+                    value="{{ prompt.presencePenalty }}"
+                    oninput="this.nextElementSibling.value = this.value"
+            >
+            <output>{{ prompt.presencePenalty }}</output>
+        </div>
+    </div>
+</div>
+
+{% css %}
+    .prompt-settings-row {
+        display: flex;
+    }
+    .prompt-settings-row > * {
+        flex: 0 1 25%;
+        margin-top: 0;
+    }
+{% endcss %}

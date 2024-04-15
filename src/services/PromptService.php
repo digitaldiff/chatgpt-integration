@@ -25,9 +25,7 @@ class PromptService extends Component
             $prompts =  $prompts->where(['enabled' => true]);
         }
 
-        $prompts =  $prompts->all();
-
-        foreach($prompts as $prompt) {
+        foreach($prompts->all() as $prompt) {
             $result[] = $this->mapToModel($prompt);
         }
 
@@ -80,6 +78,10 @@ class PromptService extends Component
         $record->promptTemplate = $model->promptTemplate;
         $record->enabled = $model->enabled;
 
+        $record->temperature = $model->temperature;
+        $record->frequencyPenalty = $model->frequencyPenalty;
+        $record->presencePenalty = $model->presencePenalty;
+
         return $record->update() > 0;
     }
 
@@ -103,6 +105,9 @@ class PromptService extends Component
         $model->enabled = $record->enabled;
         $model->label = $record->label;
         $model->promptTemplate = $record->promptTemplate;
+        $model->temperature = $record->temperature;
+        $model->frequencyPenalty = $record->frequencyPenalty;
+        $model->presencePenalty = $record->presencePenalty;
         $model->uid = $record->uid;
         $model->dateCreated = date_create_from_format('Y-m-d H:i:s', $record->dateCreated);
         $model->dateUpdated = date_create_from_format('Y-m-d H:i:s', $record->dateUpdated);

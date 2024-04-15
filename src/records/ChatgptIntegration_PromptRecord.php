@@ -7,6 +7,9 @@ use craft\db\ActiveRecord;
  * @property int $id
  * @property string $label
  * @property string $promptTemplate
+ * @property float $temperature
+ * @property float $frequencyPenalty
+ * @property float $presencePenalty
  * @property bool $enabled
  *
  * @property-read \yii\db\ActiveQueryInterface $element

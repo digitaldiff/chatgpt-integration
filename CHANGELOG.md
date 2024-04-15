@@ -1,5 +1,19 @@
 # Release Notes for chatgpt-integration
 
+## 4.0.6 - 2024-04-15
+
+### Added 
+- We now support CKEditor-fields.
+
+### Changed
+- Changed versioning to reflect the compatible craft version.
+- Updated API settings:
+    - The language model is now adjustable.
+- Updated prompt settings:
+    - "Temperature" is now adjustable.
+    - "Frequency Penalty" is now adjustable.
+    - "Presence Penalty" is now adjustable.
+
 ## 1.0.5 - 2024-03-20
 ### Changed
 - Transfer ownership of plugin

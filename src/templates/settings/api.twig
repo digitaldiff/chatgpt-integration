@@ -29,6 +29,103 @@
             type: 'number',
         }) }}
 
+        {% set preselected = settings ? settings.model : '' %}
+        {% set modelList = { (preselected): preselected} %}
+
+        <div id="modelList">
+            {% set modelInput %}
+                <div class="flex">
+                    {{ forms.select({
+                        name: 'model',
+                        options: modelList,
+                        value: settings ? settings.model : '' ,
+                        readonly: true,
+                        class: 'model-select-1',
+                        targetPrefix: ''
+                    }) }}
+
+                    <div class="btn openai-refresh-models">{{ "Refresh"|t('chatgpt-integration') }}</div>
+                    <div class="spinner hidden"></div>
+                </div>
+            {% endset %}
+
+            {{ forms.field({
+                label: "API: Language Model"|t('chatgpt-integration'),
+                instructions: "Choose the model to be used for your prompt requests."|t('chatgpt-integration'),
+                id: 'model',
+            }, modelInput) }}
+        </div>
+
+
     {% endnamespace %}
 {% endblock %}
 
+{% js %}
+
+$(function () {
+    let openaiBtn = $('.openai-refresh-models');
+
+    openaiBtn.on('click', function (ev) {
+        if (openaiBtn.hasClass('disabled')) {
+            return;
+        }
+
+        openaiBtn.addClass('disabled').siblings('.spinner').removeClass('hidden');
+
+        let modelSelect = $('.model-select-1 select');
+        var currentModel = $(modelSelect).first().val();
+
+        $.ajax({
+            type: "GET",
+            url: "https://api.openai.com/v1/models",
+            //url: "https://api.openai.com/v1/edits",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer {{ settings.getAccessToken }}");
+            },
+            success: function(data) {
+
+                let modelList = data['data'];
+
+                openaiBtn
+                        .removeClass('disabled')
+                        .siblings('.spinner')
+                        .addClass('hidden');
+
+                let currentModelStillAvailable = false;
+
+                modelSelect.empty();
+
+                for (var i = 0; i < modelList.length; i++) {
+
+                    if (modelList[i].id === currentModel) {
+                        currentModelStillAvailable = true;
+                    }
+
+                    modelSelect.append(
+                        '<option value="' +
+                        modelList[i].id +
+                        '">' +
+                        modelList[i].id + ' (' + modelList[i].owned_by + ')' +
+                        '</option>'
+                    );
+                }
+
+                if (currentModelStillAvailable) {
+                    modelSelect.val(currentModel);
+                }
+
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function(data) {
+
+        }).fail(function(data) {
+            alert(data.responseJSON.error.message);
+        });
+
+    });
+
+    openaiBtn.click();
+});
+
+{% endjs %}
