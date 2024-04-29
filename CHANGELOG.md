@@ -1,5 +1,11 @@
 # Release Notes for chatgpt-integration
 
+## 5.0.3 - 2024-04-29
+
+### Fixed
+- Incorrect PHP setting in composer.js
+- Added missing composer.lock
+
 ## 5.0.2 - 2024-04-15
 
 ### Fixed
