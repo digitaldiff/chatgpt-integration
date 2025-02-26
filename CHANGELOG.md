@@ -1,5 +1,10 @@
 # Release Notes for chatgpt-integration
 
+## 4.0.7 - 2025-02-26
+
+### Fixed
+- Error for new plugin installations (Issue #6)
+
 ## 4.0.6 - 2024-04-15
 
 ### Added 
