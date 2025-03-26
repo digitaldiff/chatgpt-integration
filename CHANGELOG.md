@@ -1,5 +1,11 @@
 # Release Notes for chatgpt-integration
 
+## 5.0.4 - 2025-03-26
+
+### Fixed
+- Bug "```Calling unknown method: craft\fields\Matrix::getBlockTypes()```" in the field settings (Issue #7)
+- Minor styling adjustments on the fields-setting page
+
 ## 5.0.3 - 2024-04-29
 
 ### Fixed

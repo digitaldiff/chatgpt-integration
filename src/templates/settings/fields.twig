@@ -20,7 +20,14 @@
         {% for entryType in entryTypes %}
             {% if entryType.fieldlayout.customFields|length %}
                 <h3 class="table-heading">{{ entryType.name }} (
-                    <div class="fields-handle-attribute code small light copytextbtn" title="Copy to clipboard" role="button" aria-label="Copy to clipboard" tabindex="0" onclick="navigator.clipboard.writeText('{{ entryType.handle }}')">
+                    <div class="fields-handle-attribute code small light copytextbtn"
+                         title="Copy to clipboard"
+                         role="button"
+                         aria-label="Copy to clipboard"
+                         tabindex="0"
+                         onclick="navigator.clipboard.writeText('{{ entryType.handle }}')"
+                         style="display: inline;"
+                    >
                         <input type="text" value="{{ entryType.handle }}" readonly="" size="{{ entryType.handle|length }}" tabindex="-1">
                         <span data-icon="clipboard" aria-hidden="true"></span>
                     </div>
@@ -36,8 +43,9 @@
                             <th class="thin">{{ 'Enabled' |t('chatgpt-integration') }}</th>
                         </tr>
                         </thead>
+                        <tbody>
+
                         {% for field in entryType.fieldlayout.customFields %}
-                            <tbody>
                             <tr class="s-{{ field.id }}">
                                 <td class="label-column">{{ field.name }}</td>
                                 <td class="handle-column">
@@ -45,7 +53,7 @@
                                         <input type="text" value="{{ field.handle }}" readonly="" size="{{ field.handle|length }}" tabindex="-1">
                                         <span data-icon="clipboard" aria-hidden="true"></span>
                                     </div></td>
-                                <td class="group-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
+                                <td class="field-type-column">{{ craft.chatgptIntegration.getClass(field) }}</td>
                                 <td class="enabled-column">
                                     {% if craft.chatgptIntegration.getClass(field) != "craft\\fields\\Matrix" %}
                                         {{ forms.lightswitch({
@@ -55,12 +63,10 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            </tbody>
 
                             {% if craft.chatgptIntegration.getClass(field) == "craft\\fields\\Matrix" %}
-                                {% for block in field.getBlockTypes() %}
+                                {% for block in field.getEntryTypes() %}
                                     {% for matrixField in block.customFields %}
-                                        <tbody>
                                         <tr class="s-{{ matrixField.id }}">
                                             <td class="label-column" style="text-indent: 2em;">{{ block.name }}: {{ matrixField.name }}</td>
                                             <td class="handle-column">
@@ -68,8 +74,7 @@
                                                     <input type="text" value="{{ matrixField.handle }}" readonly="" size="{{ matrixField.handle|length }}" tabindex="-1">
                                                     <span data-icon="clipboard" aria-hidden="true"></span>
                                                 </div></td>
-                                            <td class="group-column">{{ craft.chatgptIntegration.getClass(matrixField) }}</td>
-                                            <td class="group-column">{{ matrixField.group ?? field.group }}</td>
+                                            <td class="field-type-column">{{ craft.chatgptIntegration.getClass(matrixField) }}</td>
                                             <td class="enabled-column">
                                                 {{ forms.lightswitch({
                                                     name: 'enabledFields[' ~ entryType.handle ~ '_' ~field.handle~'].key',
@@ -77,11 +82,12 @@
                                                 }) }}
                                             </td>
                                         </tr>
-                                        </tbody>
                                     {% endfor %}
                                 {% endfor %}
                             {% endif %}
                         {% endfor %}
+                        </tbody>
+
                     </table>
                 </div>
             {% else %}
@@ -89,6 +95,11 @@
                     <p>{{ 'No fields exist yet.'|t('chatgpt-integration') }}</p>
                 </div>
             {% endif %}
+
+        {% else %}
+            <div>
+                <p>{{ 'No fields exist yet.'|t('chatgpt-integration') }}</p>
+            </div>
         {% endfor %}
 
     {% endnamespace %}
